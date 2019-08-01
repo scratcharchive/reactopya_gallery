@@ -9,7 +9,7 @@ export default class PlotlyExample extends Component {
             noise_level: 1,
             series: null
         }
-        this.pythonInterface = new PythonInterface(this, 'reactopy_examples', 'PlotlyExample');
+        this.pythonInterface = new PythonInterface(this, 'reactopy_gallery', 'PlotlyExample');
         this.pythonInterface.syncStateToJavaScriptState(['noise_level']);
         this.pythonInterface.syncPythonStateToState(['series']);
     }
