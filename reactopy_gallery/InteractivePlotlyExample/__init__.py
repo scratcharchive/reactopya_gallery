@@ -1,2 +1,1 @@
-from .PlotlyExample import PlotlyExample
 from .InteractivePlotlyExample import InteractivePlotlyExample

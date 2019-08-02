@@ -59,7 +59,8 @@ module.exports.push({
     resolve: {
         extensions: ['.css', '.js', '.json', '.png', '.gif', '.jpg', '.svg'],
         alias: {
-            'react-dom': '@hot-loader/react-dom'
+            'react-dom': '@hot-loader/react-dom',
+            'reactopy': __dirname + '/reactopy'
         }
     },
     // This is where we define how everything gets output.

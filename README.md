@@ -2,15 +2,41 @@
 
 This project contains a collection of example reactopy widgets.
 
+## Prerequisites
+
+* Python >= 3.6
+* NodeJS >= 8
+* Yarn
+
+(Tested on Linux only)
+
 ## Installation and usage
 
-You must first install the Python package. To install in development mode:
+This gallery has a dependency on [reactopy](https://github.com/flatironinstitute/reactopy). However, for development purposes, this is currently distributed as a submodule. So, you should clone this repo via:
 
 ```
+git clone --recursive [URL to Git repo]
+```
+
+Or if you have already cloned, then do:
+
+```
+git submodule update --init
+```
+
+For subsequent pulls:
+
+```
+git pull --recurse-submodules
+```
+
+
+To install the Python packages in development mode:
+
+```
+pip install -e reactopy
 pip install -e .
 ```
-
-Next you need to clone and install the [reactopy repository](https://github.com/flatironinstitute/reactopy), and place it next to this repository. In the future we will use npm and PyPI to handle this dependency.
 
 Now install and open the gallery as an electon app in development mode (with hot module reloading):
 

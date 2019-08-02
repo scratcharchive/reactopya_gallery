@@ -1,17 +1,18 @@
 from reactopy import Component
 import numpy as np
 
+
 class PlotlyExample(Component):
     def __init__(self):
         super().__init__()
 
     def on_javascript_state_changed(self, prev_state, state):
-        noise_level = state.get('noise_level', 0)
-        times0 = np.linspace(0, 100, 50)
-        amplitudes0 = times0 + np.random.normal(0, 1, times0.shape) * noise_level
+        x0 = np.linspace(0, 1, 500)
+        y0 = np.sin((x0**2) * 2 * np.pi * 12)
+        y1 = y0 * x0**2
         self.set_python_state(dict(
-            series=[dict(
-                times=times0,
-                amplitudes=amplitudes0
-            )]
+            series=[
+                dict(x=x0, y=y0),
+                dict(x=x0, y=y1)
+            ]
         ))

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PlotlyExample } from '../../reactopy_gallery';
+import * as Examples from '../../reactopy_gallery';
 import { Paper, Container } from "@material-ui/core";
 
 export default class MainWindow extends Component {
@@ -8,10 +8,16 @@ export default class MainWindow extends Component {
         return (
             <div>
                 <Container>
-                    <Paper>
-                        <h3>Plotly example</h3>
-                        <PlotlyExample />
-                    </Paper>
+                    {
+                        Object.values(Examples).map((Example) => (
+                            <Paper key={Example.title}>
+                                <hr />
+                                <h2>{Example.title}</h2>
+                                <hr />
+                                <Example gallery={true} />
+                            </Paper>
+                        ))
+                    }
                 </Container>
             </div>
         );

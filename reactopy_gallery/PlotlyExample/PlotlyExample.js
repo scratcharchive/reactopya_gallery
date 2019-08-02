@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Plot from 'react-plotly.js';
 
 export default class PlotlyExample extends Component {
+    static title = 'Plotly example'
     constructor(props) {
         super(props);
         this.state = {
@@ -34,27 +35,29 @@ export default class PlotlyExample extends Component {
             return <div>Loading...</div>;
         }
         let data = [];
-        let all_amplitudes = [];
+        let all_y = [];
         for (let i=0; i<series.length; i++) {
             let S = series[i];
             let x = [];
             let y = [];
-            let color = 'green';
-            for (let j = 0; j < S.times.length; j++) {
-                x.push(S.times[j]);
-                y.push(S.amplitudes[j]);
-                all_amplitudes.push(S.amplitudes[j]);
+            let color = colorArr[i % colorArr.length];
+            for (let j = 0; j < S.x.length; j++) {
+                x.push(S.x[j]);
+                y.push(S.y[j]);
+                all_y.push(S.y[j]);
             }
             data.push({
                 x: x, y: y,
-                color: color,
                 type: 'scatter',
-                mode: 'markers',
-                hoverinfo: 'skip'
-            })
+                mode: 'line',
+                hoverinfo: 'skip',
+                line: {
+                    color: color
+                }
+            });
         }
 
-        let yrange = [Math.min(...all_amplitudes), Math.max(...all_amplitudes)];
+        let yrange = [Math.min(...all_y), Math.max(...all_y)];
         yrange = [Math.min(yrange[0], 0), Math.max(yrange[1], 0)];
 
         return <Plot
@@ -95,3 +98,14 @@ export default class PlotlyExample extends Component {
         />
     }
 }
+
+const colorArr = [
+    "#19e64B",
+    "#3cb44b",
+    "#bfef45",
+    "#42d4f4",
+    "#4363d8",
+    "#911eb4",
+    "#f032e6",
+    "#ffe119"
+];

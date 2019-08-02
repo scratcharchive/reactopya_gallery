@@ -14,12 +14,10 @@ const tmp = require('tmp');
 // }
 
 window.ProcessRunner = function (pythonCode) {
-    console.log('ProcessRunner')
     let tmpDir = tmp.dirSync({ template: 'tmp-mountainbrowser-XXXXXX', unsafeCleanup: true});;
     let exePath = tmpDir.name + '/entry.py';
     fs.writeFileSync(exePath, pythonCode);
 
-    console.log('running', exePath);
     let m_process = spawn('python', [exePath]);
     m_process.stderr.on('data', (data) => {
         console.error('FROM PROCESS:', data.toString());

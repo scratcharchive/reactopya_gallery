@@ -1,0 +1,3 @@
+[submodule "reactopy"]
+	path = reactopy
+	url = https://github.com/flatironinstitute/reactopy
