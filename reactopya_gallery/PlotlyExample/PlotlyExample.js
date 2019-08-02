@@ -7,19 +7,15 @@ export default class PlotlyExample extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            noise_level: 1,
             series: null
         }
-        this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'PlotlyExample');
-        this.pythonInterface.syncStateToJavaScriptState(['noise_level']);
-        this.pythonInterface.syncPythonStateToState(['series']);
     }
     componentDidMount() {
+        this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'PlotlyExample');
+        this.pythonInterface.syncStateToJavaScriptState([]);
+        this.pythonInterface.syncPythonStateToState(['series']);
         this.pythonInterface.start();
         this._updateParams();
-        setTimeout(() => {
-            this.setState({noise_level: 25});
-        }, 1000);
     }
     componentDidUpdate() {
         this.pythonInterface.update();

@@ -12,11 +12,11 @@ export default class InteractivePlotlyExample extends Component {
             num_points: 40,
             series: null
         }
+    }
+    componentDidMount() {
         this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'InteractivePlotlyExample');
         this.pythonInterface.syncStateToJavaScriptState(['noise_level', 'num_points']);
         this.pythonInterface.syncPythonStateToState(['series']);
-    }
-    componentDidMount() {
         this.pythonInterface.start();
         this._updateParams();
     }
