@@ -24,6 +24,7 @@
     "react": "^16.8.6",
     "react-hot-loader": "^4.12.6",
     "react-icons": "^3.7.0",
+    "react-lazyload": "^2.6.2",
     "react-plotly.js": "^2.3.0"
   },
   "devDependencies": {
