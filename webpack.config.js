@@ -60,7 +60,7 @@ module.exports.push({
         extensions: ['.css', '.js', '.json', '.png', '.gif', '.jpg', '.svg'],
         alias: {
             'react-dom': '@hot-loader/react-dom',
-            'reactopya': __dirname + '/reactopya'
+            'reactopya': __dirname + '/reactopya/js'
         }
     },
     // This is where we define how everything gets output.
