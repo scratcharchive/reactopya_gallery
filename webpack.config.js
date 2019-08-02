@@ -60,7 +60,7 @@ module.exports.push({
         extensions: ['.css', '.js', '.json', '.png', '.gif', '.jpg', '.svg'],
         alias: {
             'react-dom': '@hot-loader/react-dom',
-            'reactopy': __dirname + '/reactopy'
+            'reactopya': __dirname + '/reactopya'
         }
     },
     // This is where we define how everything gets output.
@@ -69,9 +69,9 @@ module.exports.push({
         path: path.resolve(__dirname, 'dist/'),
         publicPath: '',
         // You can do fun things here like use the [hash] keyword to generate unique
-        // filenames, but for this purpose reactopy.js is fine. This file and path will
+        // filenames, but for this purpose reactopya.js is fine. This file and path will
         // be what you put in package.json's "main" field
-        filename: 'reactopy.js',
+        filename: 'reactopya.js',
         // This field determines how things are importable when installed from other
         // sources. UMD may not be correct now and there is an open issue to fix this,
         // but until then, more reading can be found here:
@@ -81,7 +81,7 @@ module.exports.push({
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/index_template.html',
-            title: 'Reactopy'
+            title: 'reactopya'
         }),
         new HtmlWebpackRootPlugin()
     ],

@@ -1,6 +1,6 @@
-# reactopy_gallery
+# reactopya_gallery
 
-This project contains a collection of example reactopy widgets.
+This project contains a collection of example reactopya widgets.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ This project contains a collection of example reactopy widgets.
 
 ## Installation and usage
 
-This gallery has a dependency on [reactopy](https://github.com/flatironinstitute/reactopy). However, for development purposes, this is currently distributed as a submodule. So, you should clone this repo via:
+This gallery has a dependency on [reactopya](https://github.com/flatironinstitute/reactopya). However, for development purposes, this is currently distributed as a submodule. So, you should clone this repo via:
 
 ```
 git clone --recursive [URL to Git repo]
@@ -34,7 +34,7 @@ git pull --recurse-submodules
 To install the Python packages in development mode:
 
 ```
-pip install -e reactopy
+pip install -e reactopya
 pip install -e .
 ```
 

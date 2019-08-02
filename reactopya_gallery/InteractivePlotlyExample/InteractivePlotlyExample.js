@@ -1,4 +1,4 @@
-import { PythonInterface } from 'reactopy';
+import { PythonInterface } from 'reactopya';
 import React, { Component } from 'react';
 import Plot from 'react-plotly.js';
 import InputSlider from './InputSlider';
@@ -12,7 +12,7 @@ export default class InteractivePlotlyExample extends Component {
             num_points: 40,
             series: null
         }
-        this.pythonInterface = new PythonInterface(this, 'reactopy_gallery', 'InteractivePlotlyExample');
+        this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'InteractivePlotlyExample');
         this.pythonInterface.syncStateToJavaScriptState(['noise_level', 'num_points']);
         this.pythonInterface.syncPythonStateToState(['series']);
     }

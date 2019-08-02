@@ -1,6 +1,6 @@
 import setuptools
 
-pkg_name = "reactopy_gallery"
+pkg_name = "reactopya_gallery"
 
 setuptools.setup(
     name=pkg_name,
@@ -11,7 +11,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     scripts=[],
     install_requires=[
-        'reactopy'
+        'reactopya'
     ],
     classifiers=(
         "Programming Language :: Python :: 3",

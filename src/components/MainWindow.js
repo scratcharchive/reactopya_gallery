@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import * as Examples from '../../reactopy_gallery';
+import * as Examples from '../../reactopya_gallery';
 import { Paper, Container } from "@material-ui/core";
 
 export default class MainWindow extends Component {

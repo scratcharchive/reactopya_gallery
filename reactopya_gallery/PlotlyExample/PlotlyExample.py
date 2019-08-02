@@ -1,4 +1,4 @@
-from reactopy import Component
+from reactopya import Component
 import numpy as np
 
 
