@@ -87,7 +87,7 @@ Now install and open the gallery as an electon app in development mode (with hot
 
 ```
 yarn install
-yarn electron-install
+yarn install-electron
 yarn electron-dev
 ```
 
