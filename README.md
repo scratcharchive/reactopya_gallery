@@ -2,6 +2,14 @@
 
 This project contains a collection of example reactopya widgets.
 
+## A live view of this gallery
+
+For now, I am hosting a live view of this widget gallery [here](http://50.116.50.203:8080/). The source code for these widgets can be found in the [reactopya_gallery](./reactopya_gallery) folder.
+
+## One widget per day
+
+My objective is to create one new widget each day and add it to this gallery (we'll see how long I can keep it up).
+
 ## About Reactopya
 
 I think of a widget as a standalone GUI component that provides a well-defined view into an underlying data structure, and which may also contain some computational element. It is important that a widget is both able to exist on its own and to be used as a building block along with other widgets.
@@ -20,25 +28,24 @@ ReactJS is a popular, modern framework for creating JavaScript components that a
 
 We approached this by allowing a companion Python class to be bundled with each React component, and allowing shared access to a subset of the component's state variables. This integrates nicely with React's rendering system since the appearance of a component is supposed to be determined only by its properties (props) and state variables. Whenever one of these is modified, the component is automatically re-rendered by the the Lifecycle system of React.
 
-A Reactopya component comprises the following three files
+A Reactopya component comprises the following files
 
-* **[ComponentName].js** - The ReactJS component
-* **[ComponentName].py** - The companion Python class
-* **[ComponentName].json** - Meta information about the widget
-    - Name of the Python module
-    - Name of the component
-    - Specifies which state variables are shared between the JavaScript and Python components
+```
+ComponentName/
+    __init__.py
+        Define the Python class to be part of a module
+    ComponentName.js
+        The ReactJS component
+    ComponentName.py
+        The companion Python class
+    ComponentName.json
+        Meta information about the widget:
+            Name of the Python module
+            Name of the component
+            Specifies which state variables are shared between the JavaScript and Python components
+```
 
 When the JavaScript component is mounted on a web page (or in a desktop application), an instance of the companion Python class is also created on a server, in the IPython kernel, or in a local spawned process (depending on the environment). The framework then facilitates the synchronization of the shared state variables, which represents the inter-language communication.
-
-
-## One widget per day
-
-My objective is to create one new widget each day and add it to this gallery (we'll see how long I can keep it up).
-
-## A live view of this gallery
-
-For now, I am hosting a live view of this widget gallery [here](http://50.116.50.203:8080/). The source code for these widgets can be found in the [reactopya_gallery](./reactopya_gallery) folder.
 
 ## Prerequisites
 
@@ -86,12 +93,6 @@ yarn electron-dev
 
 You should see a scrollable list of example widgets.
 
-## Docker info
+## Jupyter integration
 
-To build the docker image:
-
-```
-docker build . -t reactopya_gallery
-```
-
-To run 
+It is also possible to access these widgets in a Jupyter notebook by installing [this notebook extension](https://github.com/flatironinstitute/reactopya_gallery_jupyter).
