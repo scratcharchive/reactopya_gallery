@@ -1,0 +1,8 @@
+{
+    "pythonComponentName": "NWBView",
+    "pythonModuleName": "reactopya_gallery",
+    "description": "NWB view",
+    "propsKeys": ["path"],
+    "javaScriptStateKeys": ["path", "download_from"],
+    "pythonStateKeys": ["object", "status", "status_message"]
+}

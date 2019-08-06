@@ -68,7 +68,7 @@ export default class MainWindow extends Component {
                 <Grid container style={{}}>
                     {
                         Object.values(Examples).map((Example) => (
-                            <Grid key={Example.title} item xs={12} xl={6}>
+                            <Grid key={Example.title} item xs={12} md={6} xl={4}>
                                 <Paper style={{padding: 20, margin: 10, minHeight: 800}}>
                                     <hr />
                                     <h2>{Example.title}</h2>
