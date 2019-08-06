@@ -42,7 +42,18 @@ Now install and open the gallery as an electon app in development mode (with hot
 
 ```
 yarn install
+yarn electron-install
 yarn electron-dev
 ```
 
 You should see a scrollable list of example widgets.
+
+## Docker info
+
+To build the docker image:
+
+```
+docker build . -t reactopya_gallery
+```
+
+To run 

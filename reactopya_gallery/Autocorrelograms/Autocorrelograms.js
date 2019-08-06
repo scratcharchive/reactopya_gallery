@@ -17,9 +17,7 @@ export default class Autocorrelograms extends Component {
         }
     }
     componentDidMount() {
-        this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'Autocorrelograms');
-        this.pythonInterface.syncStateToJavaScriptState(['firingsPath', 'samplerate', 'download_from']);
-        this.pythonInterface.syncPythonStateToState(['output', 'status', 'status_message']);
+        this.pythonInterface = new PythonInterface(this, require('./Autocorrelograms.json'));
         this.pythonInterface.start();
         this._updateParams();
     }

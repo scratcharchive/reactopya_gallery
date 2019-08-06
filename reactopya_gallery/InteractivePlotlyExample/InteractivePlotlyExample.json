@@ -1,0 +1,8 @@
+{
+    "pythonComponentName": "InteractivePlotlyExample",
+    "pythonModuleName": "reactopya_gallery",
+    "description": "Interactive plotly example",
+    "propsKeys": [],
+    "javaScriptStateKeys": ["noise_level", "num_points"],
+    "pythonStateKeys": ["series"]
+}

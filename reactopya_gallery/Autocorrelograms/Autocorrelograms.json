@@ -1,0 +1,8 @@
+{
+    "pythonComponentName": "Autocorrelograms",
+    "pythonModuleName": "reactopya_gallery",
+    "description": "Autocorrelograms",
+    "propsKeys": [],
+    "javaScriptStateKeys": ["firingsPath", "samplerate", "download_from"],
+    "pythonStateKeys": ["output", "status", "status_message"]
+}

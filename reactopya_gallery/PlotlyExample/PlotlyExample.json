@@ -1,0 +1,8 @@
+{
+    "pythonComponentName": "PlotlyExample",
+    "pythonModuleName": "reactopya_gallery",
+    "description": "Plotly example",
+    "propsKeys": [],
+    "javaScriptStateKeys": [],
+    "pythonStateKeys": ["series"]
+}

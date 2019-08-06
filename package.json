@@ -12,7 +12,7 @@
     "build": "echo \"building bundle\" && NODE_OPTIONS=--max_old_space_size=4096 webpack --devtool source-map",
     "start": "echo \"starting server\" && node server/index.js",
     "electron-dev": "concurrently --kill-others \"yarn dev\" \"sleep 2 && cd electron && yarn start\"",
-    "postinstall": "echo \"installing electron\" && cd electron && yarn install"
+    "install-electron": "echo \"installing electron\" && cd electron && yarn install"
   },
   "dependencies": {
     "@hot-loader/react-dom": "^16.8.6",
@@ -25,7 +25,8 @@
     "react-hot-loader": "^4.12.6",
     "react-icons": "^3.7.0",
     "react-lazyload": "^2.6.2",
-    "react-plotly.js": "^2.3.0"
+    "react-plotly.js": "^2.3.0",
+    "ws": "^7.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

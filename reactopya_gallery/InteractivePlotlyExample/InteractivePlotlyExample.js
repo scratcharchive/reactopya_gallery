@@ -24,9 +24,7 @@ class InteractivePlotlyExampleInner extends Component {
         }
     }
     componentDidMount() {
-        this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'InteractivePlotlyExample');
-        this.pythonInterface.syncStateToJavaScriptState(['noise_level', 'num_points']);
-        this.pythonInterface.syncPythonStateToState(['series']);
+        this.pythonInterface = new PythonInterface(this, require('./InteractivePlotlyExample.json'));
         this.pythonInterface.start();
         this._updateParams();
     }
@@ -40,6 +38,9 @@ class InteractivePlotlyExampleInner extends Component {
     }
     render() {
         const { series } = this.state;
+
+        window.React3 = require('react');
+
         if (!series) {
             return <div>Loading...</div>;
         }
@@ -73,14 +74,14 @@ class InteractivePlotlyExampleInner extends Component {
                 <InputSlider
                     label={'Noise level'}
                     min={0} max={20}
-                    defaultValue={1}
+                    value={this.state.noise_level}
                     step={1}
                     onChange={(val) => {this.setState({noise_level: val})}}
                 />
                 <InputSlider
                     label={'Num. points'}
                     min={1} max={400}
-                    defaultValue={40}
+                    value={this.state.num_points}
                     step={1}
                     onChange={(val) => {this.setState({num_points: val})}}
                 />

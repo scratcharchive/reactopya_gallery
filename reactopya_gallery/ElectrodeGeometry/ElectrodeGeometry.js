@@ -16,9 +16,7 @@ export default class ElectrodeGeometry extends Component {
         }
     }
     componentDidMount() {
-        this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'ElectrodeGeometry');
-        this.pythonInterface.syncStateToJavaScriptState(['path', 'download_from']);
-        this.pythonInterface.syncPythonStateToState(['locations', 'labels', 'status', 'status_message']);
+        this.pythonInterface = new PythonInterface(this, require('./ElectrodeGeometry.json'));
         this.pythonInterface.start();
         this._updateParams();
     }

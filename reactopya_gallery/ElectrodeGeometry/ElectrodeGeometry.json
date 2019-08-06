@@ -1,0 +1,8 @@
+{
+    "pythonComponentName": "ElectrodeGeometry",
+    "pythonModuleName": "reactopya_gallery",
+    "description": "Electrode geometry",
+    "propsKeys": ["path"],
+    "javaScriptStateKeys": ["path", "download_from"],
+    "pythonStateKeys": ["locations", "labels", "status", "status_message"]
+}

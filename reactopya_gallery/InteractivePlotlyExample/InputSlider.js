@@ -1,22 +1,47 @@
 import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import Input from '@material-ui/core/Input';
 import VolumeUp from '@material-ui/icons/VolumeUp';
+import { isNumber } from 'util';
+import { TableBody, TableRow, TableCell, Table, Grid } from '@material-ui/core';
 
 export default class InputSlider extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: props.defaultValue
+            textValue: props.value
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            textValue: this.props.value
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.value != prevProps.value) {
+            this.setState({
+                textValue: this.props.value
+            });
         }
     }
 
     _setValue = (val) => {
-        if (val != this.state.value) {
-            this.setState({value: val});
+        const { min, max, value } = this.props;
+
+        if (!isNumber(val)) return;
+
+        if (val < min) {
+            val = min;
+        } else if (val > max) {
+            val = max;
+        }
+
+        if (val != value) {
             this.props.onChange && this.props.onChange(val);
         }
     }
@@ -26,22 +51,32 @@ export default class InputSlider extends Component {
     };
 
     handleInputChange = event => {
-        this._setValue(event.target.value === '' ? '' : Number(event.target.value));
-    };
+        const { min, max } = this.props;
 
-    handleBlur = () => {
-        if (this.state.value < min) {
-            this._setValue(min);
-        } else if (this.state.value > max) {
-            this._setValue(max);
+        let val = event.target.value;
+        this.setState({ textValue: val });
+        if (val === '') return;
+        if (isNaN(val)) return;
+
+        val = +val;
+        if ((min <= val) && (val <= max)) {
+            this._setValue(val);
         }
     };
-    
-    render() {
-        const { label, min, max, step } = this.props;
-        const { value } = this.state;
 
-        // const classes = useStyles();
+    // handleBlur = () => {
+    //     const { min, max, value } = this.props;
+    //     if (value < min) {
+    //         this._setValue(min);
+    //     } else if (value > max) {
+    //         this._setValue(max);
+    //     }
+    // };
+
+    render() {
+        const { label, min, max, step, value } = this.props;
+        const { textValue } = this.state;
+
         const rootStyle = {width: 250};
         const inputStyle = {width: 42}
 
@@ -67,7 +102,7 @@ export default class InputSlider extends Component {
                     <Grid item>
                         <Input
                             style={inputStyle}
-                            value={value}
+                            value={textValue}
                             margin="dense"
                             onChange={this.handleInputChange}
                             onBlur={this.handleBlur}

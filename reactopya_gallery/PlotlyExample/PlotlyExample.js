@@ -21,9 +21,7 @@ class PlotlyExampleInner extends Component {
         }
     }
     componentDidMount() {
-        this.pythonInterface = new PythonInterface(this, 'reactopya_gallery', 'PlotlyExample');
-        this.pythonInterface.syncStateToJavaScriptState([]);
-        this.pythonInterface.syncPythonStateToState(['series']);
+        this.pythonInterface = new PythonInterface(this, require('./PlotlyExample.json'));
         this.pythonInterface.start();
         this._updateParams();
     }
