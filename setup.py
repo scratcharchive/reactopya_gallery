@@ -11,7 +11,6 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     scripts=[],
     install_requires=[
-        'reactopya',
         'numpy',
         'mountaintools',
         'spikeforest'
