@@ -1,0 +1,8 @@
+{
+    "pythonComponentName": "TimeseriesView",
+    "pythonModuleName": "reactopya_gallery",
+    "description": "Timeseries view",
+    "propsKeys": [],
+    "javaScriptStateKeys": ["recordingPath", "download_from", "segmentSize", "segmentsRequested"],
+    "pythonStateKeys": ["status", "statusMessage", "numChannels", "numTimepoints", "samplerate"]
+}
