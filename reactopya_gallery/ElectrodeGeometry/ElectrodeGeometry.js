@@ -9,7 +9,6 @@ export default class ElectrodeGeometry extends Component {
     static reactopyaConfig = config;
     constructor(props) {
         super(props);
-        console.log('egeom', props);
         if ((props.locations) && (props.labels)) {
             this.state = {
                 locations: props.locations,
@@ -53,7 +52,6 @@ export default class ElectrodeGeometry extends Component {
     }
     render() {
         const { locations, labels } = this.state;
-        console.log('--- render', locations, labels, this.state);
         return (
             <RespectStatus {...this.state}>
                 <ElectrodeGeometryWidget

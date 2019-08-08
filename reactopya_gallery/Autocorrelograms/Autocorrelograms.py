@@ -78,6 +78,8 @@ class ComputeAutocorrelograms(mlpr.Processor):
     def run(self):
         from spikeforest import SFMdaRecordingExtractor, SFMdaSortingExtractor
 
+        print('test1', self.firings_path, self.samplerate)
+
         sorting = SFMdaSortingExtractor(firings_file=self.firings_path)
         samplerate = self.samplerate
 
@@ -89,7 +91,7 @@ class ComputeAutocorrelograms(mlpr.Processor):
 
         autocorrelograms = []
         for unit_id in sorting.get_unit_ids():
-            print('Unit:: {}'.format(unit_id))
+            print('Unit::g {}'.format(unit_id))
             (bin_counts, bin_edges) = compute_autocorrelogram(sorting.get_unit_spike_train(unit_id), max_dt_tp=max_dt_tp, bin_size_tp=bin_size_tp, max_samples=max_samples)
             autocorrelograms.append(dict(
                 unit_id=unit_id,
