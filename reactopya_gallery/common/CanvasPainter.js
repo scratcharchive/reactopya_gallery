@@ -30,6 +30,12 @@ export function CanvasPainter(context2d) {
         ctx.clearRect(0, 0, m_width, m_height);
     }
     this.fillRect = function (x, y, W, H, brush) {
+        if (typeof(x) === 'object') {
+            let rect = x;
+            let brush = y;
+            this.fillRect(rect[0], rect[1], rect[2], rect[3], brush);
+            return;
+        }
         if (typeof brush === 'string') brush = { color: brush };
         if (!('color' in brush)) brush = { color: brush };
         ctx.fillStyle = to_color(brush.color);
@@ -165,31 +171,69 @@ export function PainterPath() {
 }
 
 export function MouseHandler() {
-    this.setElement=function(elmt) {m_element=elmt;};
-    this.onMousePress=function(handler) {m_handlers['press'].push(handler);};
-    this.onMouseRelease=function(handler) {m_handlers['release'].push(handler);};
-    this.onMouseMove=function(handler) {m_handlers['move'].push(handler);};
-    this.onMouseEnter=function(handler) {m_handlers['enter'].push(handler);};
-    this.onMouseLeave=function(handler) {m_handlers['leave'].push(handler);};
-    this.onMouseWheel=function(handler) {m_handlers['wheel'].push(handler);};
+    this.setElement = function (elmt) { m_element = elmt; };
+    this.onMousePress = function (handler) { m_handlers['press'].push(handler); };
+    this.onMouseRelease = function (handler) { m_handlers['release'].push(handler); };
+    this.onMouseMove = function (handler) { m_handlers['move'].push(handler); };
+    this.onMouseEnter = function (handler) { m_handlers['enter'].push(handler); };
+    this.onMouseLeave = function (handler) { m_handlers['leave'].push(handler); };
+    this.onMouseWheel = function (handler) { m_handlers['wheel'].push(handler); };
+    this.onMouseDrag = function (handler) { m_handlers['drag'].push(handler); };
+    this.onMouseDragRelease = function (handler) { m_handlers['drag_release'].push(handler); };
 
-    this.mouseDown=function(e) {report('press',mouse_event(e)); return true;};
-    this.mouseUp=function(e) {report('release',mouse_event(e)); return true;};
-    this.mouseMove=function(e) {report('move',mouse_event(e)); return true;};
-    this.mouseEnter=function(e) {report('enter',mouse_event(e)); return true;};
-    this.mouseLeave=function(e) {report('leave',mouse_event(e)); return true;};
-    this.mouseWheel=function(e) {report('wheel', wheel_event(e)); return true;};
+    this.mouseDown = function (e) { report('press', mouse_event(e)); return true; };
+    this.mouseUp = function (e) { report('release', mouse_event(e)); return true; };
+    this.mouseMove = function (e) { report('move', mouse_event(e)); return true; };
+    this.mouseEnter = function (e) { report('enter', mouse_event(e)); return true; };
+    this.mouseLeave = function (e) { report('leave', mouse_event(e)); return true; };
+    this.mouseWheel = function (e) { report('wheel', wheel_event(e)); return true; };
     // elmt.on('dragstart',function() {return false;});
     // elmt.on('mousewheel', function(e){report('wheel',wheel_event($(this),e)); return false;});
 
-    let m_element=null;
-    let m_handlers={
-        press:[],release:[],move:[],enter:[],leave:[],wheel:[]
+    let m_element = null;
+    let m_handlers = {
+        press: [], release: [], move: [], enter: [], leave: [], wheel: [], drag: [], drag_release: []
     };
+    let m_dragging = false;
+    let m_drag_anchor = null;
+    let m_drag_pos = null;
+    let m_drag_rect = null;
 
-    function report(name,X) {
+    function report(name, X) {
+        drag_functionality(name, X);
         for (let i in m_handlers[name]) {
             m_handlers[name][i](X);
+        }
+    }
+
+    function drag_functionality(name, X) {
+        if (name == 'press') {
+            m_dragging = false;
+            m_drag_anchor = clone(X.pos);
+            m_drag_pos = null;
+        }
+        else if (name == 'release') {
+            if (m_dragging) {
+                report('drag_release', { anchor: clone(m_drag_anchor), pos: clone(m_drag_pos), rect: clone(m_drag_rect) });
+            }
+            m_dragging = false;
+        }
+        if ((name === 'move') && (X.buttons === 1)) {
+            // move with left button
+            if (m_dragging) {
+                m_drag_pos = clone(X.pos);
+            }
+            else {
+                m_dragging = true;
+                if (!m_drag_anchor) {
+                    m_drag_anchor = clone(X.pos);
+                }
+                m_drag_pos = clone(X.pos);
+            }
+            if (m_dragging) {
+                m_drag_rect = [Math.min(m_drag_anchor[0], m_drag_pos[0]), Math.min(m_drag_anchor[1], m_drag_pos[1]), Math.abs(m_drag_pos[0] - m_drag_anchor[0]), Math.abs(m_drag_pos[1] - m_drag_anchor[1])];
+                report('drag', { anchor: clone(m_drag_anchor), pos: clone(m_drag_pos), rect: clone(m_drag_rect) });
+            }
         }
     }
 
@@ -198,19 +242,20 @@ export function MouseHandler() {
         //var parentOffset = $(this).parent().offset(); 
         //var offset=m_element.offset(); //if you really just want the current element's offset
         var rect = m_element.getBoundingClientRect();
-        window.m_element=m_element;
+        window.m_element = m_element;
         window.dbg_m_element = m_element;
         window.dbg_e = e;
         var posx = e.clientX - rect.x;
         var posy = e.clientY - rect.y;
         return {
-            pos:[posx,posy],
-            modifiers:{ctrlKey:e.ctrlKey}
+            pos: [posx, posy],
+            modifiers: { ctrlKey: e.ctrlKey, shiftKey: e.shiftKey },
+            buttons: e.buttons
         };
     }
     function wheel_event(e) {
         return {
-            delta:e.originalEvent.wheelDelta
+            delta: e.originalEvent.wheelDelta
         };
     }
 }

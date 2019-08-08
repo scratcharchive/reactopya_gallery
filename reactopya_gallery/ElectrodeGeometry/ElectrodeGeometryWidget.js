@@ -22,14 +22,18 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
         this.transpose = false;
         this.margins = { top: 15, bottom: 15, left: 15, right: 15 };
         this.channel_rects = {};
-        this.hovered_electrode_index = -1;
+        this.hovered_electrode_indices = {};
         this.current_electrode_index = -1;
         this.selected_electrode_indices = {};
+        this.dragSelectRect = null;
 
         this.mouseHandler().onMousePress(this.handleMousePress);
         this.mouseHandler().onMouseRelease(this.handleMouseRelease);
         this.mouseHandler().onMouseMove(this.handleMouseMove);
+        this.mouseHandler().onMouseDrag(this.handleMouseDrag);
+        this.mouseHandler().onMouseDragRelease(this.handleMouseDragRelease);
 
+        this.dragSelectLayer = this.addCanvasLayer(this.paintDragSelect);
         this.mainLayer = this.addCanvasLayer(this.paintMainLayer);
     }
 
@@ -66,6 +70,13 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
             }
         }
         this.setSize(W, H);
+    }
+
+    paintDragSelect = (painter) => {
+        painter.clearRect(0, 0, this.width(), this.height());
+        if (this.dragSelectRect) {
+            painter.fillRect(this.dragSelectRect, 'lightgray');
+        }
     }
 
     paintMainLayer = (painter) => {
@@ -175,7 +186,7 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
         let color_selected_hover = 'rgb(200, 200, 150)';
 
         if (ind === this.current_electrode_index) {
-            if (ind === this.hovered_electrode_index) {
+            if (ind in this.hovered_electrode_indices) {
                 return color_current_hover;
             }
             else {
@@ -183,7 +194,7 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
             }
         }
         else if (this.selected_electrode_indices[ind]) {
-            if (ind === this.hovered_electrode_index) {
+            if (ind in this.hovered_electrode_indices) {
                 return color_selected_hover;
             }
             else {
@@ -191,7 +202,7 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
             }
         }
         else {
-            if (ind === this.hovered_electrode_index) {
+            if (ind in this.hovered_electrode_indices) {
                 return color_hover;
             }
             else {
@@ -212,11 +223,29 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
         return -1;
     }
 
+    electrodeIndicesInRect(rect) {
+        let ret = [];
+        for (let i in this.channel_rects) {
+            let rect0 = this.channel_rects[i];
+            if (rects_intersect(rect, rect0)) {
+                ret.push(i);
+            }
+        }
+        return ret;
+    }
+
     setHoveredElectrodeIndex(ind) {
-        if (ind === this.hovered_electrode_index)
+        this.setHoveredElectrodeIndices([ind]);
+    }
+
+    setHoveredElectrodeIndices(inds) {
+        let tmp = {};
+        for (let ind of inds)
+            tmp[ind] = true;
+        if (JSON.parse(stable_stringify(tmp)) === this.hovered_electrode_indices)
             return;
-        this.hovered_electrode_index = ind;
-        this.repaint()
+        this.hovered_electrode_indices = tmp;
+        this.repaint();
     }
 
     setCurrentElectrodeIndex(ind) {
@@ -244,11 +273,22 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
         this.setSelectedElectrodeIndices(Object.keys(x));
     }
 
+    deselectElectrodeIndex(ind) {
+        let x = JSON.parse(JSON.stringify(this.selected_electrode_indices));
+        delete x[ind];
+        this.setSelectedElectrodeIndices(Object.keys(x));
+    }
+
     handleMousePress = (X) => {
         if (!X) return;
         let elec_ind = this.electrodeIndexAtPixel(X.pos);
         if ((X.modifiers.ctrlKey) || (X.modifiers.shiftKey)) {
-            this.selectElectrodeIndex(elec_ind);
+            if (elec_ind in this.selected_electrode_indices) {
+                this.deselectElectrodeIndex(elec_ind);
+            }
+            else {
+                this.selectElectrodeIndex(elec_ind);
+            }
         }
         else {
             this.setCurrentElectrodeIndex(elec_ind);
@@ -261,8 +301,30 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
 
     handleMouseMove = (X) => {
         if (!X) return;
-        let elec_ind = this.electrodeIndexAtPixel(X.pos);
-        this.setHoveredElectrodeIndex(elec_ind);
+        if (!this.dragSelectRect) {
+            let elec_ind = this.electrodeIndexAtPixel(X.pos);
+            this.setHoveredElectrodeIndex(elec_ind);
+        }
+    }
+
+    handleMouseDrag = (X) => {
+        if (JSON.stringify(X.rect) !== JSON.stringify(this.dragSelectRect)) {
+            this.dragSelectRect = X.rect;
+            this.setHoveredElectrodeIndices(this.electrodeIndicesInRect(this.dragSelectRect));
+            this.repaint();
+        }
+    }
+
+    handleMouseDragRelease = (X) => {
+        let inds = this.electrodeIndicesInRect(X.rect);
+        this.setCurrentElectrodeIndex(null);
+        this.setSelectedElectrodeIndices(inds);
+        if (inds.length === 1) {
+            this.setCurrentElectrodeIndex(inds[0]);
+        }
+        this.dragSelectRect = null;
+        this.hovered_electrode_indices = {};
+        this.repaint();
     }
 
     render() {
@@ -330,6 +392,12 @@ class AutoSizer extends Component {
             </div>
         );
     }
+}
+
+function rects_intersect(R1, R2) {
+    if ((R2[0] + R2[2] < R1[0]) || (R2[0] > R1[0] + R1[2])) return false;
+    if ((R2[1] + R2[3] < R1[1]) || (R2[1] > R1[1] + R1[3])) return false;
+    return true;
 }
 
 function compute_average(list) {
