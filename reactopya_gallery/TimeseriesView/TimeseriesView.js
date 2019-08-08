@@ -107,7 +107,7 @@ class TimeseriesViewInner extends Component {
         }
         else {
             return (
-                <div>this.state.status_message</div>
+                <div>{this.state.status_message}</div>
             );
         }
     }

@@ -71,6 +71,9 @@ class ComputeAutocorrelograms(mlpr.Processor):
 
     # Parameters
     samplerate = mlpr.FloatParameter()
+    max_samples = mlpr.IntegerParameter(optional=True, default=100000)
+    bin_size_msec = mlpr.FloatParameter(optional=True, default=2)
+    max_dt_msec = mlpr.FloatParameter(optional=True, default=50)
 
     # Outputs
     json_out = mlpr.Output()
@@ -82,10 +85,10 @@ class ComputeAutocorrelograms(mlpr.Processor):
 
         sorting = SFMdaSortingExtractor(firings_file=self.firings_path)
         samplerate = self.samplerate
+        max_samples = self.max_samples
+        max_dt_msec = self.max_dt_msec
+        bin_size_msec = self.bin_size_msec
 
-        max_samples = 100000
-        max_dt_msec = 50
-        bin_size_msec = 2
         max_dt_tp = max_dt_msec * samplerate / 1000
         bin_size_tp = bin_size_msec * samplerate / 1000
 
@@ -113,6 +116,12 @@ class Autocorrelograms(Component):
         self.set_python_state(dict(status='running', status_message='Running'))
         mt.configDownloadFrom(state.get('download_from', []))
 
+        max_samples = state.get('max_samples')
+        max_dt_msec = state.get('max_dt_msec')
+        bin_size_msec = state.get('bin_size_msec')
+        if not max_dt_msec:
+            return
+
         firings_path = state.get('firingsPath', None)
         if not firings_path:
             self.set_python_state(dict(
@@ -138,7 +147,14 @@ class Autocorrelograms(Component):
             ))
             return
 
-        result = ComputeAutocorrelograms.execute(firings_path=firings_path2, samplerate=samplerate, json_out=dict(ext='.json'))
+        result = ComputeAutocorrelograms.execute(
+            firings_path=firings_path2,
+            samplerate=samplerate,
+            max_samples=max_samples,
+            bin_size_msec=bin_size_msec,
+            max_dt_msec=max_dt_msec,
+            json_out=dict(ext='.json')
+        )
         if result.retcode != 0:
             self.set_python_state(dict(
                 status='error',

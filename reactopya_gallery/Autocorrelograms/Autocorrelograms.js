@@ -12,6 +12,9 @@ export default class Autocorrelograms extends Component {
         this.state = {
             firingsPath: props.firingsPath,
             samplerate: props.samplerate,
+            max_samples: props.max_samples || 10000,
+            bin_size_msec: props.bin_sec_msec || 2,
+            max_dt_msec: props.max_dt_msec || 50,
             download_from: props.download_from,
             status: '',
             status_message: '',
@@ -45,8 +48,8 @@ export default class Autocorrelograms extends Component {
                                     bin_counts={ac.bin_counts}
                                     bin_edges={ac.bin_edges}
                                     title={`Unit ${ac.unit_id}`}
-                                    width={250}
-                                    height={250}
+                                    width={150}
+                                    height={150}
                                 />
                             </Grid>
                         ))
