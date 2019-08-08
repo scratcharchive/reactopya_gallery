@@ -56,7 +56,6 @@ export default class CanvasWidget extends Component {
         return this._mouseHandler;
     }
     repaint = () => {
-        console.log('--- repaint...');
         for (let L of this._canvasLayers) {
             let ctx = L.context();
             if (!ctx) return;

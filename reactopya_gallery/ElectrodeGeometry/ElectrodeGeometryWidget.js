@@ -72,8 +72,6 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
         const W = this.width();
         const H = this.height();
 
-        console.log('painting main layer', JSON.stringify(this.selected_electrode_indices));
-
         painter.clearRect(0, 0, W, H);
 
         let W1 = W, H1 = H;
@@ -233,11 +231,9 @@ class ElectrodeGeometryWidgetInner extends CanvasWidget {
         for (let ind of inds) {
             newsel[ind] = true;
         }
-        console.log('----------------A', newsel);
         if (stable_stringify(newsel) === stable_stringify(this.selected_electrode_indices)) {
             return;
         }
-        console.log('----------------B', newsel);
         this.selected_electrode_indices = newsel;
         this.repaint()
     }
