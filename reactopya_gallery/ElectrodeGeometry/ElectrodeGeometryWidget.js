@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { CanvasPainter, MouseHandler } from "../common/CanvasPainter";
+import CanvasWidget from './CanvasWidget';
+const stable_stringify = require('json-stable-stringify');
 
 export default class ElectrodeGeometryWidget extends Component {
     render() {
@@ -11,11 +12,9 @@ export default class ElectrodeGeometryWidget extends Component {
     }
 }
 
-class ElectrodeGeometryWidgetInner extends Component {
+class ElectrodeGeometryWidgetInner extends CanvasWidget {
     constructor(props) {
         super(props);
-        this.state = {
-        }
         this.xmin = 0;
         this.xmax = 1;
         this.ymin = 0;
@@ -25,23 +24,26 @@ class ElectrodeGeometryWidgetInner extends Component {
         this.channel_rects = {};
         this.hovered_electrode_index = -1;
         this.current_electrode_index = -1;
-        this.canvasRef = React.createRef();
-        this.mouseHandler = new MouseHandler();
+        this.selected_electrode_indices = {};
 
-        this.mouseHandler.onMousePress(this.handleMousePress);
-        this.mouseHandler.onMouseRelease(this.handleMouseRelease);
-        this.mouseHandler.onMouseMove(this.handleMouseMove);
+        this.mouseHandler().onMousePress(this.handleMousePress);
+        this.mouseHandler().onMouseRelease(this.handleMouseRelease);
+        this.mouseHandler().onMouseMove(this.handleMouseMove);
+
+        this.mainLayer = this.addCanvasLayer(this.paintMainLayer);
     }
 
-    componentDidMount() {
-        this.repaint()
+    componentWillMount() {
+        this.computeSize();
+        this.repaint();
     }
 
     componentDidUpdate() {
-        this.repaint()
+        this.computeSize();
+        this.repaint();
     }
 
-    determineWidthHeight() {
+    computeSize() {
         this.updatePositions();
 
         let W = this.props.width;
@@ -63,20 +65,14 @@ class ElectrodeGeometryWidgetInner extends Component {
                 H = h0 / w0 * W;
             }
         }
-        return { width: W, height: H };
+        this.setSize(W, H);
     }
 
-    repaint = () => {
-        const { width, height } = this.determineWidthHeight();
-        const canvas = this.canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+    paintMainLayer = (painter) => {
+        const W = this.width();
+        const H = this.height();
 
-        this.mouseHandler.setElement(canvas);
-
-        let painter = new CanvasPainter(ctx);
-        let W = width;
-        let H = height;
+        console.log('painting main layer', JSON.stringify(this.selected_electrode_indices));
 
         painter.clearRect(0, 0, W, H);
 
@@ -176,15 +172,33 @@ class ElectrodeGeometryWidgetInner extends Component {
         let color = 'rgb(0, 0, 255)';
         let color_hover = 'rgb(100, 100, 255)';
         let color_current = 'rgb(200, 200, 100)';
-        let color_current_hover = 'rgb(220, 220, 150)';
+        let color_current_hover = 'rgb(220, 220, 100)';
+        let color_selected = 'rgb(180, 180, 150)';
+        let color_selected_hover = 'rgb(200, 200, 150)';
 
         if (ind === this.current_electrode_index) {
-            if (ind === this.hovered_electrode_index) return color_current_hover;
-            else return color_current;
+            if (ind === this.hovered_electrode_index) {
+                return color_current_hover;
+            }
+            else {
+                return color_current;
+            }
+        }
+        else if (this.selected_electrode_indices[ind]) {
+            if (ind === this.hovered_electrode_index) {
+                return color_selected_hover;
+            }
+            else {
+                return color_selected;
+            }
         }
         else {
-            if (ind === this.hovered_electrode_index) return color_hover;
-            else return color;
+            if (ind === this.hovered_electrode_index) {
+                return color_hover;
+            }
+            else {
+                return color;
+            }
         }
     }
 
@@ -207,7 +221,43 @@ class ElectrodeGeometryWidgetInner extends Component {
         this.repaint()
     }
 
+    setCurrentElectrodeIndex(ind) {
+        if (ind === this.current_electrode_index)
+            return;
+        this.current_electrode_index = ind;
+        this.repaint()
+    }
+
+    setSelectedElectrodeIndices(inds) {
+        let newsel = {};
+        for (let ind of inds) {
+            newsel[ind] = true;
+        }
+        console.log('----------------A', newsel);
+        if (stable_stringify(newsel) === stable_stringify(this.selected_electrode_indices)) {
+            return;
+        }
+        console.log('----------------B', newsel);
+        this.selected_electrode_indices = newsel;
+        this.repaint()
+    }
+
+    selectElectrodeIndex(ind) {
+        let x = JSON.parse(JSON.stringify(this.selected_electrode_indices));
+        x[ind] = true;
+        this.setSelectedElectrodeIndices(Object.keys(x));
+    }
+
     handleMousePress = (X) => {
+        if (!X) return;
+        let elec_ind = this.electrodeIndexAtPixel(X.pos);
+        if ((X.modifiers.ctrlKey) || (X.modifiers.shiftKey)) {
+            this.selectElectrodeIndex(elec_ind);
+        }
+        else {
+            this.setCurrentElectrodeIndex(elec_ind);
+            this.setSelectedElectrodeIndices([elec_ind]);
+        }
     }
 
     handleMouseRelease = (X) => {
@@ -220,34 +270,18 @@ class ElectrodeGeometryWidgetInner extends Component {
     }
 
     render() {
-        const { width, height } = this.determineWidthHeight();
-
-        // We'll need to think of a better way to do this
-        setTimeout(this.repaint, 100);
-
-        let canvas = <canvas
-            ref={this.canvasRef}
-            width={width}
-            height={height}
-            onMouseDown={this.mouseHandler.mouseDown}
-            onMouseUp={this.mouseHandler.mouseUp}
-            onMouseMove={this.mouseHandler.mouseMove}
-        />
-
         if (this.props.locations === undefined) {
             return <span>
                 <div>Loading...</div>
-                {canvas}
             </span>
         }
         else if (this.props.locations === null) {
             return <span>
                 <div>Not found.</div>
-                {canvas}
             </span>
         }
 
-        return canvas;
+        return this.renderCanvasWidget();
     }
 }
 

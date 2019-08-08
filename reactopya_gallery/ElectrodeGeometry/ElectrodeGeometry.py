@@ -1,6 +1,7 @@
 from reactopya import Component
 import numpy as np
 from mountaintools import client as mt
+import spikeextractors as se
 
 
 class ElectrodeGeometry(Component):
@@ -13,18 +14,31 @@ class ElectrodeGeometry(Component):
         path = state.get('path', None)
         if path:
             self.set_python_state(dict(status_message='Realizing file: {}'.format(path)))
-            path2 = mt.realizeFile(path)
-            if not path2:
-                self.set_python_state(dict(
-                    status='error',
-                    status_message='Unable to realize file: {}'.format(path)
-                ))
-                return
-            self.set_python_state(dict(status_message='Loading locatoins'))
-            x = np.genfromtxt(path2, delimiter=',')
-            locations = x.T
-            num_elec = x.shape[0]
-            labels = ['{}'.format(a) for a in range(1, num_elec + 1)]
+            if path.endswith('.csv'):
+                path2 = mt.realizeFile(path)
+                if not path2:
+                    self.set_python_state(dict(
+                        status='error',
+                        status_message='Unable to realize file: {}'.format(path)
+                    ))
+                    return
+                self.set_python_state(dict(status_message='Loading locatoins'))
+                x = np.genfromtxt(path2, delimiter=',')
+                locations = x.T
+                num_elec = x.shape[0]
+                labels = ['{}'.format(a) for a in range(1, num_elec + 1)]
+            elif path.endswith('.nwb'):
+                path2 = mt.realizeFile(path)
+                if not path2:
+                    self.set_python_state(dict(
+                        status='error',
+                        status_message='Unable to realize file: {}'.format(path)
+                    ))
+                    return
+                X = se.NwbRecordingExtractor(path=path2)
+                locations = X.get_channel_locations()
+                num_elec = locations.shape[0]
+                labels = ['{}'.format(a) for a in range(1, num_elec + 1)]
         else:
             locations = [[0, 0], [1, 0], [1, 1], [2, 1]]
             labels = ['1', '2', '3', '4']
