@@ -45,6 +45,7 @@ class ElectrodeGeometryWidgetInner extends Component {
         this.updatePositions();
 
         let W = this.props.width;
+        if (!W) W=400;
         let H = this.props.height;
         if (!H) {
             let x1 = this.xmin - this.mindist, x2 = this.xmax + this.mindist;

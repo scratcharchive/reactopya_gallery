@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { PainterPath, MouseHandler, CanvasPainter } from "../common/CanvasPainter"
+import { relative } from "path";
 
 export default class TimeseriesWidget extends Component {
     /*
@@ -129,7 +130,8 @@ export default class TimeseriesWidget extends Component {
             onKeyDown={this.handleKeyPress}
             style={{
                 width: this.props.width,
-                height: this.props.height
+                height: this.props.height,
+                position: 'relative'
             }}
             onMouseDown={this.mouseHandler.mouseDown}
             onMouseUp={this.mouseHandler.mouseUp}

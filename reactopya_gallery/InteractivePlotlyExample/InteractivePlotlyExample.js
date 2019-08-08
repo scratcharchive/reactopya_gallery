@@ -18,23 +18,20 @@ class InteractivePlotlyExampleInner extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            noise_level: 1,
-            num_points: 40,
+            noise_level: ('noise_level' in this.props) ? this.props.noise_level : 1,
+            num_points: ('num_points' in this.props) ? this.props.num_points : 40,
             series: null
         }
     }
     componentDidMount() {
         this.pythonInterface = new PythonInterface(this, require('./InteractivePlotlyExample.json'));
         this.pythonInterface.start();
-        this._updateParams();
     }
     componentDidUpdate() {
         this.pythonInterface.update();
     }
     componentWillUnmount() {
         this.pythonInterface.stop();
-    }
-    _updateParams() {
     }
     render() {
         const { series } = this.state;

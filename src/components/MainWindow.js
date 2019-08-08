@@ -74,7 +74,7 @@ export default class MainWindow extends Component {
                                     <h2>{Example.title}</h2>
                                     <hr />
                                     <LazyLoader>
-                                        <Example gallery={true} />
+                                        <Example {...((Example.reactopyaConfig||{}).galleryProps||{})} />
                                     </LazyLoader>
                                 </Paper>
                             </Grid>

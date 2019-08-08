@@ -2,22 +2,24 @@ import { PythonInterface } from 'reactopya';
 import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
 import Plot from 'react-plotly.js';
+const config = require('./Autocorrelograms.json');
 
 export default class Autocorrelograms extends Component {
     static title = 'Autocorrelograms'
+    static reactopyaConfig = config;
     constructor(props) {
         super(props);
         this.state = {
-            firingsPath: 'sha1dir://ed0fe4de4ef2c54b7c9de420c87f9df200721b24.synth_visapy/mea_c30/set1/firings_true.mda',
-            samplerate: 30000,
-            download_from: 'spikeforest.public',
+            firingsPath: props.firingsPath,
+            samplerate: props.samplerate,
+            download_from: props.download_from,
             status: '',
             status_message: '',
             output: null
         }
     }
     componentDidMount() {
-        this.pythonInterface = new PythonInterface(this, require('./Autocorrelograms.json'));
+        this.pythonInterface = new PythonInterface(this, config);
         this.pythonInterface.start();
         this._updateParams();
     }

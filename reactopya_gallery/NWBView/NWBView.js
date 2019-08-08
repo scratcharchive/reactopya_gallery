@@ -3,6 +3,7 @@ import { Table, TableBody, TableRow, TableCell, TableHead, Paper, IconButton } f
 import { FaChevronRight, FaChevronDown } from 'react-icons/fa';
 import { PythonInterface } from 'reactopya';
 import Sha1PathLink from './Sha1PathLink.js';
+const config = require('./NWBView.json');
 
 function laststr(x) {
     let y = x.split('/');
@@ -251,20 +252,19 @@ class NWBViewSwitchboard extends Component {
 
 export default class NWBView extends Component {
     static title = 'NWB view'
+    static reactopyaConfig = config
     constructor(props) {
         super(props);
         this.state = {
-            path: 'sha1://ee3264cbd2ad0db9e4ea12db5902bc788cc934c5/bon03.nwb.json',
-            // sha1://6ceb6d34de6c74cd42093e100205abf993367fb5/bon04.nwb.json
-            // sha1://aece07f7207ff3552fb1819291398609788aac2f/ger05.nwb.json
-            download_from: 'spikeforest.public',
+            path: props.path,
+            download_from: props.download_from,
             status: '',
             status_message: '',
             object: null
         }
     }
     componentDidMount() {
-        this.pythonInterface = new PythonInterface(this, require('./NWBView.json'));
+        this.pythonInterface = new PythonInterface(this, config);
         this.pythonInterface.start();
         this._updateParams();
     }

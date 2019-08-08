@@ -3,9 +3,12 @@ import React, { Component } from 'react';
 import Mda from './Mda';
 import TimeseriesWidget from "./TimeseriesWidget";
 import TimeseriesModel from "./TimeseriesModel";
+const config = require('./TimeseriesView.json');
+
 
 export default class TimeseriesView extends Component {
-    title = 'TimeseriesView'
+    static title = 'Timeseries view'
+    static reactopyaConfig = config;
     render() {
         return (
             <AutoSizer>
@@ -19,20 +22,20 @@ class TimeseriesViewInner extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            recordingPath: 'sha1dir://fb52d510d2543634e247e0d2d1d4390be9ed9e20.synth_magland/datasets_noise10_K10_C4/001_synth',
+            recordingPath: props.recordingPath,
             timeseriesModelSet: false,
             numChannels: null, // from python state
             numTimepoints: null, // from python state
             samplerate: null, // from python state
             segmentSize: 1000,
             status_message: '', // from python state
-            download_from: 'spikeforest.public'
+            download_from: props.download_from
         }
         this.timeseriesModel = null;
     }
 
     componentDidMount() {
-        this.pythonInterface = new PythonInterface(this, require('./TimeseriesView.json'));
+        this.pythonInterface = new PythonInterface(this, config);
         this.pythonInterface.start();
         this.updateData();
     }
@@ -92,14 +95,14 @@ class TimeseriesViewInner extends Component {
     render() {
         if (this.state.timeseriesModelSet) {
             return (
-                <React.Fragment>
+                <div>
                     <TimeseriesWidget
                         timeseriesModel={this.timeseriesModel}
                         width={this.props.width}
                         height={this.props.height || 500}
                     />
                     <div>{this.state.status_message}</div>
-                </React.Fragment>
+                </div>
             )
         }
         else {
