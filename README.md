@@ -1,5 +1,7 @@
 # Reactopya gallery
 
+**Note:** This repo has been archived. Please see [reactopya_examples](https://github.com/flatironinstitute/reactopya_examples).
+
 This project contains a collection of example reactopya widgets.
 
 ## A live view of this gallery
